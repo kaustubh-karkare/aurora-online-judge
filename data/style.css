@@ -1,0 +1,69 @@
+@font-face { font-family:Calibri; src: url('fonts/calibri.ttf'); }
+@font-face { font-family:Calibri; src: url('fonts/calibrib.ttf'); font-weight:bold; }
+@font-face { font-family:Calibri; src: url('fonts/calibrii.ttf'); font-style:italic; }
+@font-face { font-family:Calibri; src: url('fonts/calibriz.ttf'); font-weight:bold; font-style:italic; }
+
+@font-face { font-family:Consola; src: url('fonts/consola.ttf'); }
+@font-face { font-family:Consola; src: url('fonts/consolab.ttf'); font-weight:bold; }
+@font-face { font-family:Consola; src: url('fonts/consolai.ttf'); font-style:italic; }
+@font-face { font-family:Consola; src: url('fonts/consolaz.ttf'); font-weight:bold; font-style:italic; }
+
+* { border-collapse:collapse; font-family:Calibri,Tahoma; font-size:14; }
+a,a:visited { color:blue; text-decoration:none; cursor:pointer; } a:hover { color:red; }
+h1 { font-size:24; margin:20 0; }
+h2,h2 a { font-size:18; }
+h3 { padding:0; margin:0 0 10 0; text-align:center; }
+code { font-family:Consola,'Courier New'; text-align:left; overflow:auto; }
+img { width:100%; }
+green { color:green; font-family:Consola; text-decoration:underline; }
+red { color:red; font-family:Consola; text-decoration:underline; }
+sno { color:#888888; font-family:Consola; text-decoration:none; }
+textarea.code { width:100%; min-width:100%; max-width:100; height:200; min-height:200; padding:5px; font-family:Consola,'Courier New'; text-align:left; font-size:13px; }
+
+table.main { width:1200; }
+table.main td.side { width:250; vertical-align:top; }
+table.main td.center { vertical-align:top; }
+div.sidebox, div.centerbox { border:1px solid #0000FF; border-radius:10; background:#EEEEFF; margin:10 5 0 5; }
+div.small, div.small a { font-size:10px; font-weight:normal; }
+
+div.sidebox { padding:10; width:250; overflow:hidden;}
+div.sidebox table { width:100%; }
+div.sidebox table td, div.sidebox table th { text-align:center; border:1px solid #EEEEFF; }
+	div.sidebox table td { background:#DDDDFF; }
+	div.sidebox table th { background:#BBBBFF; }
+	div.sidebox table tr.AC td  { background:#CCCCFF; }
+	div.sidebox table tr.rank td { background:#CCCCFF; }
+	span.nologin0 { font-size:11; cursor:pointer; color:blue; } span.nologin:hover { color:red; }
+	span.nologin1 { font-size:11; display:none; } span.nologin1 li { font-size:11; }
+	div.sidebox table.clarlatest td { text-align:left; }
+	div.problist { max-height:120px; overflow:auto; }
+
+div.messagebox { background:#FFBBBB; border:1px solid red; padding:5px; text-align:center; border-radius:10; margin:10 5 0 5; cursor:pointer; }
+
+div.centerbox { padding:10px; }
+	div.centerbox table td, div.centerbox table th
+		{ padding:5; background:#DDDDFF; border:1px solid #EEEEFF; text-align:center; border-radius:0;}
+	div.centerbox table td { background:#DDDDFF; }
+	div.centerbox table td.highlight { background:#CCCCFF; }
+	div.centerbox table th { background:#BBBBFF; }
+	div.centerbox table input, div.centerbox table select { padding:1px; }
+	div.centerbox table.faq { width:100%; }
+	div.centerbox table.faq th, div.centerbox table.faq td { text-align:justify; }
+	div.centerbox table.faq td { text-indent:40; } div.centerbox table.faq td li { text-indent:0; }
+	div.centerbox table.warn td { text-align:left; padding:10 20; }
+	div.centerbox form.updatepass input { width:140; }
+	div.centerbox div.probindex table td, div.centerbox div.probindex table th { width:90px; }
+	div.centerbox table.substat { width:100%; }
+	div.centerbox table.substat td { width:10%; }
+	div.centerbox div.limit { width:580px; overflow:auto; border:0px solid #BBBBFF; }
+	div.centerbox div.code { width:526px; padding:10; background:#CCCCFF; font-family:Consola; }
+	div.centerbox table.io div.code { width:auto; padding:4; overflow:visible; background:#DDDDFF; vertical-align:top; }
+	div.centerbox div.filter { width:575px; padding:10; background:#DDDDFF; }
+	div.centerbox textarea.notice { min-width:100%; max-width:100; min-height:400px; font-family:Consola; }
+
+table.submission tr.NA td { background:#DDDDFF; }
+table.submission tr.AC td { background:#44DD44; }
+table.submission tr.NAC td { background:#F0AA40; }
+
+table.io td { padding:0; vertical-align:top; }
+div#input, div#output, div#actual { overflow:auto; max-height:300px; width:185px; }

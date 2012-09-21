@@ -1,0 +1,19 @@
+WAP to output the square of an integer.
+Input : Read until the end of file. Each line contains a single positive integer less than or equal to 10.
+Output : Output the square of the integer, one in each line.
+
+<b>SAMPLE INPUT</b>
+<code>
+1
+2
+3
+5
+</code>
+
+<b>SAMPLE OUTPUT </b>
+<code>
+1
+4
+9
+25
+</code>
