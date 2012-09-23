@@ -40,7 +40,10 @@ function display_submissions(){
 		$filters[]="<a href='?".str_replace("&res=$filter[result]","",$urlargs)."'>".$fullresult[$filter["result"]]."</a>";
 		$rejudge.="&res=".urlencode($_GET["res"]);
 		}
-	$condition = ""; foreach($filter as $key=>$value) $condition.= "AND $key=".(is_numeric($value)?"$value":"'$value'")." ";
+	$condition = "";
+	foreach($filter as $key=>$value)
+		if($key=="result" && $value=="NA") $condition.=" AND (result='' OR result='...') ";
+		else $condition.= "AND $key=".(is_numeric($value)?"$value":"'$value'")." ";
 	
 	// Problem Groups - Special Condition
 	if(($g=mysql_getdata("SELECT distinct pgroup FROM problems WHERE status".(($_SESSION["status"]=="Admin")?"!='Delete'":"='Active'")." ORDER BY pgroup"))!=NULL){
@@ -142,21 +145,23 @@ function display_submissions(){
 		$t = mysql_query("SELECT teamname FROM teams WHERE tid=$temp[tid] and (status='Normal' or status='Admin')"); if(is_resource($t) && mysql_num_rows($t)==1){ $t = mysql_fetch_array($t); $teamname=$t['teamname']; } else continue;
 		$t = mysql_query("SELECT name FROM problems WHERE pid=$temp[pid] and status".(($_SESSION["status"]=="Admin")?"!='Delete'":"='Active'").";"); if(is_resource($t) && mysql_num_rows($t)==1){ $t = mysql_fetch_array($t); $probname=$t['name']; } else continue;
 		$fresult = $result = $temp["result"]; if(isset($fullresult[$result])) $fresult = $fullresult[$result];
-		$r=$result;
-		if($result==""){ $result="NA"; $fresult="Queued"; } elseif($result=="..."){ $result="NA"; $fresult="Evaluating<img1 src='data/loading.gif'>"; } elseif($result!="AC") $result="NAC";
-			if($_SESSION["status"]=="Admin" || $_SESSION["tid"]==$temp["tid"] || $temp["access"]=="public")
-				echo "<tr class='$result'><td><a href='?display=code&rid=$temp[rid]' title='Link to Code'>$temp[rid]</a></td><td><a href='?".str_replace("&tid=$temp[tid]","",$urlargs)."&tid=$temp[tid]' title='Link to Team'>$teamname</td><td><a href='?".str_replace("&pid=$temp[pid]","",$urlargs)."&pid=$temp[pid]' title='Link to Problem'>$probname</a></td><td><a href='?".str_replace("&lan=".urlencode($temp["language"]),"",$urlargs)."&lan=".urlencode($temp["language"])."' title='Link to $temp[lan] Submissions'>$temp[lan]</a></td><td>$temp[time]</td><td class='$result'><a href='?$urlargs&res=$r'>$fresult</a></td>";
-			else echo "<tr class='$result'><td>$temp[rid]</td><td><a href='?".str_replace("&tid=$temp[tid]","",$urlargs)."&tid=$temp[tid]'>$teamname</td><td><a href='?".str_replace("&pid=$temp[pid]","",$urlargs)."&pid=$temp[pid]'>$probname</a></td><td><a href='?".str_replace("&lan=".urlencode($temp["language"]),"",$urlargs)."&lan=".urlencode($temp["language"])."' title='Link to $temp[lan] Submissions'>$temp[lan]</a></td><td>$temp[time]</td><td class='$result'><a href='?$urlargs&res=$r'>$fresult</a></td>";
-			if($_SESSION["status"]=="Admin"){
-				echo "<td><input type='button' value='Rejudge' onClick=\"window.location='?action=rejudge&rid=$temp[rid]';\">";
-				if($temp["access"]=="private") echo "<input type='button' value='Private' title='Make this code Public (visible to all).' onClick=\"window.location='?action=makecodepublic&rid=$temp[rid]';\">";
-				else echo "<input type='button' value='Public' title='Make this code Private (visible only to the team that submitted it).' onClick=\"window.location='?action=makecodeprivate&rid=$temp[rid]';\">";
-				echo "<input type='button' value='Delete' onClick=\"if(confirm('Are you sure you wish to delete Run ID $temp[rid]?'))window.location='?action=makecodedeleted&rid=$temp[rid]';\">";
-				echo "</td>";
-				}
-			else if($_SESSION["status"]=="Admin" || $_SESSION["tid"]==$temp["tid"] || $temp["access"]=="public") echo "<td><input type='button' value='Code' onClick=\"window.location='?display=code&rid=$temp[rid]';\"></td>";
-			else echo "<td></td>";
-			echo "</tr>";
+
+		$r = $result;
+		if($result==""){ $r="NA"; $fresult="Queued"; } elseif($result=="..."){ $r="NA"; $fresult="Evaluating"; } elseif($result!="AC") $result="NAC";
+
+		if($_SESSION["status"]=="Admin" || $_SESSION["tid"]==$temp["tid"] || $temp["access"]=="public")
+			echo "<tr class='$result'><td><a href='?display=code&rid=$temp[rid]' title='Link to Code'>$temp[rid]</a></td><td><a href='?".str_replace("&tid=$temp[tid]","",$urlargs)."&tid=$temp[tid]' title='Link to Team'>$teamname</td><td><a href='?".str_replace("&pid=$temp[pid]","",$urlargs)."&pid=$temp[pid]' title='Link to Problem'>$probname</a></td><td><a href='?".str_replace("&lan=".urlencode($temp["language"]),"",$urlargs)."&lan=".urlencode($temp["language"])."' title='Link to $temp[lan] Submissions'>$temp[lan]</a></td><td>$temp[time]</td><td class='$result'><a href='?$urlargs&res=$r'>$fresult</a></td>";
+		else echo "<tr class='$result'><td>$temp[rid]</td><td><a href='?".str_replace("&tid=$temp[tid]","",$urlargs)."&tid=$temp[tid]'>$teamname</td><td><a href='?".str_replace("&pid=$temp[pid]","",$urlargs)."&pid=$temp[pid]'>$probname</a></td><td><a href='?".str_replace("&lan=".urlencode($temp["language"]),"",$urlargs)."&lan=".urlencode($temp["language"])."' title='Link to $temp[lan] Submissions'>$temp[lan]</a></td><td>$temp[time]</td><td class='$result'><a href='?$urlargs&res=$r'>$fresult</a></td>";
+		if($_SESSION["status"]=="Admin"){
+			echo "<td><input type='button' value='Rejudge' onClick=\"window.location='?action=rejudge&rid=$temp[rid]';\">";
+			if($temp["access"]=="private") echo "<input type='button' value='Private' title='Make this code Public (visible to all).' onClick=\"window.location='?action=makecodepublic&rid=$temp[rid]';\">";
+			else echo "<input type='button' value='Public' title='Make this code Private (visible only to the team that submitted it).' onClick=\"window.location='?action=makecodeprivate&rid=$temp[rid]';\">";
+			echo "<input type='button' value='Delete' onClick=\"if(confirm('Are you sure you wish to delete Run ID $temp[rid]?'))window.location='?action=makecodedeleted&rid=$temp[rid]';\">";
+			echo "</td>";
+			}
+		else if($_SESSION["status"]=="Admin" || $_SESSION["tid"]==$temp["tid"] || $temp["access"]=="public") echo "<td><input type='button' value='Code' onClick=\"window.location='?display=code&rid=$temp[rid]';\"></td>";
+		else echo "<td></td>";
+		echo "</tr>";
 		}
 	echo "</table><br>";
 

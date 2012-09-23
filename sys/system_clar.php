@@ -114,8 +114,8 @@ function display_clarifications(){
 		echo "</tr>";
 		if(!empty($temp["reply"])) echo "<tr><td style='text-align:left;'><i>".($temp["reply"]!=""?"<b>Judge's Response</b> : ":"").$temp["reply"]."</i></td></tr>";
 		echo "<tr><td colspan=2></td></tr>";
-		echo "<form name='updateclar' action='?action=updateclar' method='post'><input type='hidden' name='field'><input type='hidden' name='time'><input type='hidden' name='value'></form>";
 		}
+	echo "<form name='updateclar' action='?action=updateclar' method='post'><input type='hidden' name='field'><input type='hidden' name='time'><input type='hidden' name='value'></form>";
 	echo "</table><br>$pagenav<br><br>";
 	
 	if($_SESSION["status"]=="Admin") echo "<input type='button' value='Delete All Clarification Requests' onClick=\"if(confirm('Are you sure you wish to Delete All Clarification Requests?')){ f=document.forms['updateclar']; f.field.value='Clear'; f.submit(); }\"><br><br>";

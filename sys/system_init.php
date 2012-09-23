@@ -14,7 +14,7 @@ closedir($f);
 $admin = array();
 $currentmessage;
 $ajaxlogout=0;
-$fullresult = array("AC"=>"Accepted","WA"=>"Wrong Answer","PE"=>"Presentation Error","CE"=>"Compilation Error","RTE"=>"Run Time Error","TLE"=>"Time Limit Exceeded","DQ"=>"Disqualified");
+$fullresult = array("AC"=>"Accepted","WA"=>"Wrong Answer","PE"=>"Presentation Error","CE"=>"Compilation Error","RTE"=>"Run Time Error","TLE"=>"Time Limit Exceeded","DQ"=>"Disqualified","NA"=>"Unjudged");
 $extension = array("Brain"=>"b","C"=>"c","C++"=>"cpp","C#"=>"cs","Java"=>"java","JavaScript"=>"js","Pascal"=>"pas","Perl"=>"pl","PHP"=>"php","Python"=>"py","Ruby"=>"rb","Text"=>"txt");
 $brush = array("Brain"=>"text","C"=>"c","C++"=>"cpp","C#"=>"csharp","Java"=>"java","Java","JavaScript"=>"js","Pascal"=>"text","Perl"=>"perl","PHP"=>"php","Python"=>"python","Ruby"=>"ruby","Text"=>"text");
 $invalidchars = "[^A-Za-z0-9`~!@#$%^&*()_+|=\\\{\}\[\];:<>?,./ 	\n-]";
@@ -83,7 +83,7 @@ if(isset($_GET["download"]) and in_array($_GET["download"],array("statement","in
 		//header("Cache-Control: private",false);
 		header("Content-Type: application/force-download");
 		header("Content-Disposition: attachment; filename= \"Aurora Online Judge - Problem ID $_GET[pid] - ".ucwords($_GET["download"]).".txt\"");
-		header("Content-Length: ".strlen($t["statement"]));
+		header("Content-Length: ".strlen($t[$_GET["download"]]));
 		header("Content-Transfer-Encoding: binary"); 
 		echo $t[$_GET["download"]];
 		}
