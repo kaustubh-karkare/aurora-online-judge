@@ -11,7 +11,7 @@ Setup:
 		$admin_teamname = "admin";
 		$admin_password = "password";
 		?>
-	You shall need to download the font files specified in "<path-to-document-root>/aurora/data/style.css" from a different source and save them in "<path-to-document-root>/aurora/data/fonts/".
+	Create an empty subdirectory called "temp" in the "sys" directory (using "mkdir sys/temp").
 	Using a browser, open "https://hostname/aurora/?display=doc" to read further instructions on how to use this software.
 	To judge sumissions, run the script "aurora.py" on (preferably) a virtual machine that satisfies the server configuration specified in the FAQ.
 
