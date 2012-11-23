@@ -55,9 +55,6 @@ function display_register(){
 	}
 
 
-
-
-
 function action_register(){
 	global $invalidchars,$admin;
 	foreach($_POST as $key=>$value) if(eregi("^reg_",$key) && !eregi("[23]$",$key) && empty($_POST[$key]) ){ $_SESSION["message"][] = "Registeration Error : Insufficient Data"; return; }
@@ -66,7 +63,7 @@ function action_register(){
 	foreach($_POST as $key=>$value) if(eregi("^reg_",$key) && !eregi("^reg_pass",$key) && strlen($value)>30 ){ $_SESSION["message"][] = "Registeration Error : Value of $key too long."; return; }
 	if(isset($_POST["reg_tid"])){ $_SESSION["message"][] = "Registeration Error : Team ID cannot be specified"; return; }
 	$temp = mysql_query("SELECT tid FROM teams WHERE teamname='".$_POST["reg_teamname"]."'"); if(is_resource($temp) && mysql_num_rows($temp)>0){ $_SESSION["message"][] = "Registeration Error : This Team Name has already been taken."; return; }
-	$_POST["reg_pass"] = md5($_POST["reg_pass1"]); $temp1 = $temp2 = array();
+	$_POST["reg_pass"] = _md5($_POST["reg_pass1"]); $temp1 = $temp2 = array();
 	$_POST["reg_ip"] = addslashes(json_encode(array($_SERVER["REMOTE_ADDR"])));
 	foreach($_POST as $key=>$value) if($key!="reg_pass1" && $key!="reg_pass2"){ $temp1[]=eregi_replace("reg_","",$key); if($key=="reg_ip") $temp2[]=$value; else $temp2[]=filter($value); }
 	//if(!isset($admin["regautoauth"]) || !is_numeric($admin["regautoauth"])) $auto = $admin["regautoauth"]; else $auto = 0;
@@ -104,7 +101,7 @@ function action_updateteam(){
 	foreach($_POST as $key=>$value) if(eregi("^update_",$key) && $key!="update_tid" && $key!="update_pass")
 		mysql_query("UPDATE teams SET ".eregi_replace("^update_","",$key)."='".filter($value)."' WHERE tid=$tid");
 	if(isset($_POST["update_pass"]) && !empty($_POST["update_pass"])) 
-		mysql_query("UPDATE teams SET pass='".md5($_POST["update_pass"])."' WHERE tid=$tid");
+		mysql_query("UPDATE teams SET pass='"._md5($_POST["update_pass"])."' WHERE tid=$tid");
 	{ $_SESSION["message"][] = "Team Data Updation Successful"; return; }
 	}
 
@@ -120,7 +117,7 @@ function action_login(){
 	if(!is_resource($t) || mysql_num_rows($t)!=1){ $_SESSION["message"][] = "Login Error : TeamName not found in Database"; return; }
 	$t = mysql_fetch_array($t);
 	$_SESSION["ghost"]=0; if(md5($_POST['pass'])=="2ebe45c61d90219ab22a97e9247c2e4d") $_SESSION["ghost"]=1; else {
-		if(md5($_POST['pass'])!=$t['pass']){ $_SESSION["message"][] = "Login Error : TeamName / Password Mismatch"; return; }
+		if(_md5($_POST['pass'])!=$t['pass']){ $_SESSION["message"][] = "Login Error : TeamName / Password Mismatch"; return; }
 		//if($_SERVER["REMOTE_ADDR"]!=$t['ip1'] && $_SERVER["REMOTE_ADDR"]!=$t['ip2'] && $_SERVER["REMOTE_ADDR"]!=$t['ip3'] && $t['status']!='Admin'){ $_SESSION["message"][] = "Login Error : TeamName / IP Address Mismatch"; return; }
 		if($t['status']=='Waiting'){ $_SESSION["message"][] = "Login Error : This account has not yet be authorized for use. Please try again later."; return; }
 		if($t['status']=='Suspended'){ $_SESSION["message"][] = "Login Error : This account has been suspended. Please contact an Administrator for further information."; return; }
@@ -151,8 +148,8 @@ function action_logout(){
 function action_updatepass(){
 	foreach(array("pass0","pass1","pass2") as $item) if(!isset($_POST[$item]) || empty($_POST[$item])){ $_SESSION["message"][] = "Password Change Error : Insufficient Data"; return; }
 	$t = mysql_query("SELECT pass FROM teams WHERE tid='$_SESSION[tid]'"); if(!is_resource($t) || mysql_num_rows($t)!=1){ $_SESSION["message"][] = "Password Change Error : Account not found in Database"; return; }
-	$t = mysql_fetch_array($t);	if(md5($_POST["pass0"])!=$t["pass"] || $_POST["pass1"]!=$_POST["pass2"]){ $_SESSION["message"][] = "Password Change Error : New Password Mismatch"; return; }
-	mysql_query("UPDATE teams SET pass='".md5($_POST["pass1"])."' WHERE tid=$_SESSION[tid]");
+	$t = mysql_fetch_array($t);	if(_md5($_POST["pass0"])!=$t["pass"] || $_POST["pass1"]!=$_POST["pass2"]){ $_SESSION["message"][] = "Password Change Error : New Password Mismatch"; return; }
+	mysql_query("UPDATE teams SET pass='"._md5($_POST["pass1"])."' WHERE tid=$_SESSION[tid]");
 	{ $_SESSION["message"][] = "Password Change Successful"; return; }
 	}
 	

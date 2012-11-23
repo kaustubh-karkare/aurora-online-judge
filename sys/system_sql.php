@@ -1,5 +1,7 @@
 <?php
 
+function _md5($str){ return $str; } // no hash
+
 function mysql_initiate(){
 	global $mysql_hostname,$mysql_username,$mysql_password,$mysql_database,$admin,$ajaxlogout,$sessionid,$admin_teamname,$admin_password;
 	
@@ -20,8 +22,8 @@ function mysql_initiate(){
 	
 	// If empty tables
 	$temp = mysql_query("SELECT * FROM teams"); if(is_resource($temp) && mysql_num_rows($temp)==0){
-		mysql_query("INSERT INTO teams (teamname,pass,status,score,name1,roll1,branch1,email1,phone1) VALUES ('".($admin_teamname)."','".md5($admin_password)."','Admin',0,'Kaustubh Karkare','','','kaustubh.karkare@gmail.com','')");
-		mysql_query("INSERT INTO teams (teamname,pass,status,score,name1,roll1,branch1,email1,phone1) VALUES ('ACM','".md5($admin_password)."','Admin',0,'ACM Team','','','','')"); ###
+		mysql_query("INSERT INTO teams (teamname,pass,status,score,name1,roll1,branch1,email1,phone1) VALUES ('".($admin_teamname)."','"._md5($admin_password)."','Admin',0,'Kaustubh Karkare','','','kaustubh.karkare@gmail.com','')");
+		mysql_query("INSERT INTO teams (teamname,pass,status,score,name1,roll1,branch1,email1,phone1) VALUES ('ACM','"._md5($admin_password)."','Admin',0,'ACM Team','','','','')"); ###
 		}
 	$temp = mysql_query("SELECT * FROM problems"); if(is_resource($temp) && mysql_num_rows($temp)==0){
 		mysql_query("INSERT INTO problems (pid,code,name,type,status,pgroup,statement,input,output,timelimit,score,languages) VALUES (1,'TEST','Squares','Ad-Hoc','Active','#00 Test','".addslashes(file_get('data/example/problem.txt'))."','".addslashes(file_get('data/example/input.txt'))."','".addslashes(file_get('data/example/output.txt'))."',1,0,'Brain,C,C++,C#,Java,JavaScript,Pascal,Perl,PHP,Python,Ruby,Text')");
