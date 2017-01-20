@@ -19,7 +19,7 @@ sudo apt-get -y install lamp-server^
 sudo apt-get -y install phpmyadmin
 sudo apt-get -y install apache2
 cd /var/www/html
-git clone https://github.com/kaustubh-karkare/aurora-online-judge.git
+git clone https://github.com/mr-bat/aurora-online-judge.git
 #Revert back to the version script was tested on.
 #You can remove it to get later features on your own.
 git checkout 71f5d685531daa5d62b24ab2e5de922cef3f2bb7
