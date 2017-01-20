@@ -109,31 +109,31 @@ def execute(exename,language):
 	elif language=="Ruby": os.system("ruby env/"+exename+".rb"+ioeredirect);
 	running = 0
 	endtime = time.time()
-	timediff = endtime-starttime
+	timediff = endtime - starttime
 
 # Program Termination
 def kill(exename,language):
 	global mypid
-	if language=="Brain": process = "bf"
-	elif language=="C": process = exename
-	elif language=="C++": process = exename
-	elif language=="C#": process = "mono"
-	elif language=="Java": process = "java"
+	if language=="Brain":        process = "bf"
+	elif language=="C":          process = exename
+	elif language=="C++":        process = exename
+	elif language=="C#":         process = "mono"
+	elif language=="Java":       process = "java"
 	elif language=="JavaScript": process = "rhino"
-	elif language=="Pascal": process = exename
-	elif language=="Perl": process = "perl"
-	elif language=="PHP": process = "php"
-	elif language=="Python": process = "python"
-	elif language=="Ruby": process = "ruby"
-	for process in os.popen("ps -A | grep "+str(process)).read().split("\n"):
+	elif language=="Pascal":     process = exename
+	elif language=="Perl":       process = "perl"
+	elif language=="PHP":        process = "php"
+	elif language=="Python":     process = "python"
+	elif language=="Ruby":       process = "ruby"
+	for process in os.popen("ps -A | grep " + str(process)).read().split("\n"):
 		pdata = process.split();
-		if(len(pdata)>0): pid = int(pdata[0])
+		if(len(pdata) > 0): pid = int(pdata[0])
 		else: pid = -1
-		if pid==mypid or pid==-1: continue
-		os.system("kill -9 "+str(pid))
+		if pid == mypid or pid == -1: continue
+		os.system("kill -9 " + str(pid))
 
 # Perform system checks
-if(platform.system()!='Linux'):
+if(platform.system() != 'Linux'):
 	print "Error : This script can only be run on Linux."
 	sys.exit(0);
 
@@ -166,7 +166,7 @@ try:
 	cursor = link.cursor(sql.cursors.DictCursor)
 	print "Connected to Server ..."
 	print
-	
+
 	while 1: # Infinite Loop
 		if "-cache" not in sys.argv: cursor.execute("SELECT rid,runs.pid as pid,tid,language,runs.name,runs.code as code,error,input,problems.output as output,timelimit,options FROM runs,problems WHERE problems.pid=runs.pid and runs.access!='deleted' and runs.result is NULL and runs.language in "+str(tuple(languages))+" ORDER BY rid ASC LIMIT 0,1")
 		# else: cursor.execute("SELECT rid,runs.pid as pid,tid,language,runs.name,runs.code as code,error,timelimit,options FROM runs x,problems WHERE problems.pid=runs.pid and (tid=1 AND runs.rid = (SELECT max(rid) FROM runs WHERE x.tid=tid and x.pid=pid)) and runs.access!='deleted' and runs.result is NULL and runs.language in "+str(tuple(languages))+" ORDER BY rid ASC LIMIT 0,1")
@@ -174,35 +174,36 @@ try:
 		if cursor.rowcount>0:
 			os.system("clear")
 			print "\nAthena Online Judge : Execution Protocol\n";
-			
+
 			# Select an Unjudged Submission
 			run = cursor.fetchone()
+			# print run
 			cursor.execute("UPDATE runs SET result='...' WHERE rid='%d'" % (run["rid"]));
 			print "Selected Run ID %d for Evaluation." % (run["rid"]);
-			
+
 			# Clear Environment
 			while len(os.listdir("env"))>0:
 				try:
 					for file in os.listdir("env"): os.unlink("env/"+file);
 				except:	pass
 			print "Cleared Environment for Program Execution." ;
-			
+
 			# Initialize Variables
 			result = None; timetaken = 0; running = 0
-			
+
 			# Check for "#include<CON>" in case of C/C++
 			if result==None and (run["language"]=="C" or run["language"]=="C++") and re.match(r"#include\s*['\"<]\s*[cC][oO][nN]\s*['\">]",run["code"]):
 				print "Language C/C++ : #include<CON> detected."
 				file_write("env/error.txt","Error : Including CON is not allowed.");
 				result = "CE"; timetaken = 0
-			
+
 			if result==None and run["language"]=="C":
 				code = run["code"].split("\n");
 				newcode = ""
 				for line in code:
 					newcode+=re.sub(r"//(.*)$","",line)+"\n"
 				run["code"]=newcode
-			
+
 			# Check for malicious codes in Python
 			if False and result==None and run["language"]=="Python" and (
 				re.match(r"import os",run["code"]) or
@@ -210,7 +211,7 @@ try:
 				print "Suspicious Code."
 				file_write("env/error.txt","Error : Suspicious code.");
 				result = "SC"; timetaken = 0
-			
+
 			# Write Code & Input File
 			if result==None:
 				if run["language"]=="Java": codefilename = run["name"]
@@ -222,15 +223,15 @@ try:
 				if "-cache" not in sys.argv: file_write("env/input.txt",run["input"]);
 				else: shutil.copyfile("io_cache/Aurora Online Judge - Problem ID "+str(run["pid"])+" - Input.txt","env/input.txt")
 				print "Code & Input File Created."
-			
+
 			# Compile, if required
 			if result==None:
 				result = create(codefilename,run["language"]); # Compile
-			
+
 			# Increase Time Limit in case of JavaScript & PHP
 			if run["language"] in ('JavaScript','PHP'):
 				run["timelimit"]+=1
-			
+
 			# Run the program through a new thread, and kill it after some time
 			if result==None and run["language"]!="Text":
 				running = 0
@@ -249,7 +250,7 @@ try:
 					timetaken = run["timelimit"]
 					kill(codefilename,run["language"])
 					print "Time Limit Exceeded - Process killed."
-				
+
 			# Compare the output
 			output = ""
 			if result==None and run["language"]!="Text" and file_read("env/error.txt")!="":
@@ -257,7 +258,7 @@ try:
 				result = "RTE"
 			if result==None:
 				output = file_read("env/output.txt")
-				if "-cache" in sys.argv: 
+				if "-cache" in sys.argv:
 					run["output"] = file_read("io_cache/Aurora Online Judge - Problem ID "+str(run["pid"])+" - Output.txt")
 				correct = run["output"].replace("\r","")
 				file_write("env/correct.txt",run["output"])
@@ -267,7 +268,7 @@ try:
 				elif(re.sub(r"\s","",output)==re.sub(r"\s","",correct)): result = "AC" if "P" in run["options"] else "PE"
 				else: result = "WA"
 			print "Output Judgement Complete."
-			
+
 			# Write results to database
 			error = file_read("env/error.txt")
 			if result=="AC": output = ""
@@ -290,7 +291,7 @@ try:
 				print "Press CTRL+C to terminate the Execution Protocol."
 				time.sleep(1)
 				countdown-=1
-		
+
 		# Update admin.lastjudge time on server
 		cursor.execute("SELECT * FROM admin WHERE variable='lastjudge'");
 		if cursor.rowcount>0: cursor.execute("UPDATE admin SET value='"+str(int(time.time())+timeoffset)+"' WHERE variable='lastjudge'");
@@ -319,3 +320,9 @@ print "Released lock on Execution Protocol.\n"
 
 # Terminate
 print "Athena Online Judge : Execution Protocol Terminated.\n";
+
+# {'code': "importPackage(java.io);\r\nimportPackage(java.lang);\r\nvar reader = new BufferedReader( new InputStreamReader(System['in']) );\r\nwhile (true){\r\n    var line = reader.readLine();\r\n    if (line==null) break;\r\n    else {\r\n        i = parseInt(line);\r\n        System.out.println((i*i)+'');\r\n        }\r\n    }", 'name': 'code', 'language': 'JavaScript', 'output': '1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n', 'pid': 1L, 'timelimit': 1L, 'error': '', 'tid': 1L, 'input': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n', 'rid': 5L, 'options': None}
+# {'code': 'while($n = <STDIN>){\r\n\tprint ($n*$n);\r\n\tprint "\\n";\r\n\t}', 'name': 'code', 'language': 'Perl', 'output': '1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n', 'pid': 1L, 'timelimit': 1L, 'error': '', 'tid': 1L, 'input': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n', 'rid': 7L, 'options': None}
+# {'code': 'test', 'name': 'code', 'language': 'C++', 'output': '1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n', 'pid': 1L, 'timelimit': 1L, 'error': 'env/code.cpp:1:1: error: \xe2\x80\x98test\xe2\x80\x99 does not name a type\n test\n ^\n', 'tid': 1L, 'input': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n', 'rid': 11L, 'options': None}
+# {'code': 'while n = gets\n\tn = n.chomp.to_i\n\tputs (n*n).to_s\nend', 'name': 'code', 'language': 'Ruby', 'output': '1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n', 'pid': 1L, 'timelimit': 1L, 'error': '', 'tid': 1L, 'input': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n', 'rid': 10L, 'options': None}
+# {'code': 'try:\n\twhile 1:\n\t\ti = int(raw_input())\n\t\tprint i*i\nexcept:\n\tpass\n', 'name': 'code', 'language': 'Python', 'output': '1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n', 'pid': 1L, 'timelimit': 1L, 'error': '', 'tid': 1L, 'input': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n', 'rid': 9L, 'options': None}
